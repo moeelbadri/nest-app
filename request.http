@@ -1,0 +1,93 @@
+### create user
+POST http://localhost:3001/v1/user/signup
+content-type: application/json
+// normal user PqweM@example.com
+{
+    "name": "medoelbadri",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "admin"
+}
+
+### login  user
+POST http://localhost:3001/v1/user/login
+content-type: application/json
+
+{
+    "email": "PqweM@example.com",
+    "password": "admin123"
+}
+
+### login  admin
+POST http://localhost:3001/v1/user/login
+content-type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "admin123"
+}
+
+
+### get all users
+GET http://localhost:3001/v1/user/66aff66472c19e48fdbdd83f
+
+### remove user
+DELETE http://localhost:3001/v1/user/669e706c8471fc868d1f1305
+
+### get single review
+GET http://localhost:3001/v1/review/66b0c8a97d2d01285a08c2cf
+
+
+### get all reviews
+GET http://localhost:3001/v1/review
+
+
+### delete review
+DELETE http://localhost:3001/v1/review/66b0eb20c61f29315e660e1b
+
+
+### create review
+POST http://localhost:3001/v1/review
+content-type: application/json
+
+{
+    "bookId": "66b0c0dc409a7296ef36ae75",
+    "userId": "66b0c6099045b33fd75e9c44",
+    "rating": 5,
+    "comment": "good book"
+}
+
+
+
+### create book
+POST http://localhost:3001/v1/book
+content-type: application/json
+
+{
+    "title": "book1",
+    "author": "author1",
+    "ISBN": "123456",
+    "quantity": 10
+}
+
+### get books
+GET http://localhost:3001/v1/book
+
+
+### delete book
+DELETE http://localhost:3001/v1/book/66b0c0dc409a7296ef36ae75
+
+### create reservation
+POST http://localhost:3001/v1/reservation
+content-type: application/json
+
+{
+    "bookId": "66b0fe83c47af1bdd0f0dd0c"
+}
+
+### get all reservations
+GET http://localhost:3001/v1/reservation
+
+
+### remove reservation
+DELETE http://localhost:3001/v1/reservation/66b114ace5f2ef4056a35c70
