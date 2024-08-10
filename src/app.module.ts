@@ -8,6 +8,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { BookModule } from './book/book.module';
 import { ReviewModule } from './review/review.module';
 import { ReservationModule } from './reservation/reservation.module';
+import { AuthGuard } from './guards/auth.guard';
+import { ReviewService } from './review/review.service';
 @Module({
   imports: [ 
     MongooseModule.forRoot('mongodb://localhost:27017'),
@@ -17,10 +19,14 @@ import { ReservationModule } from './reservation/reservation.module';
   }]), 
   UserModule, BookModule, ReviewModule, ReservationModule],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     }
   ],
 })

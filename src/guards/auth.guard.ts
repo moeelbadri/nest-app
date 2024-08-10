@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector,ModuleRef } from '@nestjs/core';
 import { roles } from 'src/constants/enums';
 import { BookService } from 'src/book/book.service';
@@ -8,15 +8,17 @@ import { ReservationService } from 'src/reservation/reservation.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
   private services:any;
-    constructor(private reflector: Reflector,
+    constructor(
+    private reflector: Reflector,
     private moduleRef: ModuleRef,
+    private readonly reviewService :ReviewService,
   ) {
-    this.services= {
-      userService: UserService,
-      bookService: BookService,
-      reviewService: ReviewService,
-      reservationService :ReservationService
-    };
+    // this.services= {
+    //   userService: UserService,
+    //   bookService: BookService,
+    //   reviewService: ReviewService,
+    //   reservationService :ReservationService
+    // };
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -30,10 +32,10 @@ export class AuthGuard implements CanActivate {
 
      if(providedService){
       const service = this.moduleRef.get(this.services[providedService], { strict: false });
-      if(service){
+        if(service){
         const document = await service.findOne(request.params.id);
         if(document.userId !== request.session.user._id) throw new UnauthorizedException('You cant access this protected resource');
-      }
+        }
      }else{
       const requiredRole = this.reflector.get<string>('role', context.getHandler());
       const keys = Object.values(roles);  
