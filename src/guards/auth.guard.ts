@@ -19,31 +19,27 @@ export class AuthGuard implements CanActivate {
     };
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRole = this.reflector.get<string>('role', context.getHandler());
-    const providedService = this.reflector.get<string>('service', context.getHandler());
-
-    const keys = Object.values(roles);  
     const request = context.switchToHttp().getRequest();
     if (request.session.user._id) {request.body.userId = request.session.user._id}
 
     if (!request.session) throw new UnauthorizedException('You are not authorized to access this resource');
     
-    if (request.params.id===request.session.user._id) return true;
+    if (request.params.id===request.session.user._id) return true; // access his profile
 
+    const providedService = this.reflector.get<string>('service', context.getHandler());
 
-    const requiredRoleIndex = keys.indexOf(requiredRole);
-    const userRoleIndex = keys.indexOf(request.session.user.role);
-    if (userRoleIndex >= requiredRoleIndex) return true;
-    if (userRoleIndex < requiredRoleIndex){
-      if (providedService){
-        const service = this.moduleRef.get(this.services[providedService], { strict: false });
-        if(service){
-          const document = await service.findOne(request.params.id);
-          if(document.userId !== request.session.user._id) throw new UnauthorizedException('You cant access this protected resource');
-        }
-      }else{
-         throw new UnauthorizedException('You are not authorized to make this request')
+     if(providedService){
+      const service = this.moduleRef.get(this.services[providedService], { strict: false });
+      if(service){
+        const document = await service.findOne(request.params.id);
+        if(document.userId !== request.session.user._id) throw new UnauthorizedException('You cant access this protected resource');
       }
-    }
+     }else{
+      const requiredRole = this.reflector.get<string>('role', context.getHandler());
+      const keys = Object.values(roles);  
+      const requiredRoleIndex = keys.indexOf(requiredRole);
+      const userRoleIndex = keys.indexOf(request.session.user.role);
+      if (userRoleIndex < requiredRoleIndex) throw new UnauthorizedException('You are not authorized to make this request');
+     }
   }
 }
